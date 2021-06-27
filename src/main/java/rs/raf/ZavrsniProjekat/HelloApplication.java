@@ -5,6 +5,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import rs.raf.ZavrsniProjekat.repositories.subject.MySqlRepository;
 import rs.raf.ZavrsniProjekat.repositories.subject.NewsRepositorty;
+import rs.raf.ZavrsniProjekat.services.AdminService;
 import rs.raf.ZavrsniProjekat.services.CategoryService;
 import rs.raf.ZavrsniProjekat.services.NewsService;
 import rs.raf.ZavrsniProjekat.services.UserService;
@@ -28,6 +29,7 @@ public class HelloApplication extends ResourceConfig {
                 this.bindAsContract(UserService.class);
                 this.bindAsContract(CategoryService.class);
                 this.bindAsContract(NewsService.class);
+                this.bindAsContract(AdminService.class);
             }
         };
         register(binder);

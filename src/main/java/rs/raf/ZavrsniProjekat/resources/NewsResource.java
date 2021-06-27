@@ -9,6 +9,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/news")
 public class NewsResource {
@@ -40,5 +41,16 @@ public class NewsResource {
             return Response.ok(this.newsService.deleteNews(id)).build();
         else
             return Response.status(401).build();
+    }
+
+    @GET
+    @Path("/{text}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchNews(@PathParam("text") String text, @CookieParam("myCookie")Cookie cookie) {
+        if(cookie == null){
+            return  Response.status(400).build();
+        }else{
+            return Response.ok(this.newsService.searchNews(text)).build();
+        }
     }
 }

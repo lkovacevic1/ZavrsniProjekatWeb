@@ -21,4 +21,7 @@ public interface NewsRepositorty {
     public List<News> allNews();
     public News addNews(News news);
     public News deleteNews(Integer id);
+    public List<News> searchNews(String text);
+    //Admin
+    public List<User> allUsers();
 }

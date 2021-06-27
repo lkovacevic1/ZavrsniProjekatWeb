@@ -1,6 +1,5 @@
 package rs.raf.ZavrsniProjekat.repositories.subject;
 
-import com.mysql.cj.exceptions.ConnectionIsClosedException;
 import org.apache.commons.codec.digest.DigestUtils;
 import rs.raf.ZavrsniProjekat.entities.Category;
 import rs.raf.ZavrsniProjekat.entities.News;
@@ -8,6 +7,7 @@ import rs.raf.ZavrsniProjekat.entities.User;
 import rs.raf.ZavrsniProjekat.entities.UserTipe;
 import rs.raf.ZavrsniProjekat.repositories.MySqlAbstractRepository;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -337,5 +337,62 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
             this.closeConnection(connection);
         }
         return null;
+    }
+
+    @Override
+    public List<News> searchNews(String text) {
+        System.out.println("Udje u searshNews!!!");
+        List<News> news = new ArrayList<>();
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+            connection = this.newConnection();
+
+            preparedStatement = connection.prepareStatement("select * from vest where Naslov like '%' ? '%' or Tekst like '%' ? '%'");
+            preparedStatement.setString(1, text);
+            preparedStatement.setString(2, text);
+            resultSet = preparedStatement.executeQuery();
+            System.out.println("Pre while");
+            while(resultSet.next()){
+                System.out.println("Udje u while!!!");
+                news.add(new News(resultSet.getInt("IdVesti"), resultSet.getInt("idKategorije"), resultSet.getInt("idKorisnika"), resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getDate("vremeKreiranja"), resultSet.getInt("brojPoseta")));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally{
+            this.closeStatment(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return news;
+    }
+
+    @Override
+    public List<User> allUsers() {
+
+        List<User> users = new ArrayList<>();
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        try{
+            connection = this.newConnection();
+
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select * from korisnik");
+            while(resultSet.next()){
+                users.add(new User(resultSet.getInt("IdKorisnika"), resultSet.getInt("IdTipKorisnika"), resultSet.getString("Ime"), resultSet.getString("Prezime"), resultSet.getString("Email"), resultSet.getString("Lozinka"), resultSet.getBoolean("Status")));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally{
+            this.closeStatment(statement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return users;
     }
 }
