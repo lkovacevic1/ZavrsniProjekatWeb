@@ -82,43 +82,6 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
     }
 
     @Override
-    public User addUser(User user) {
-
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-
-        try{
-            connection = this.newConnection();
-
-            String[] generatedColumns = {"id"};
-
-            String shaPassword = DigestUtils.sha256Hex(user.getLozinka());
-            preparedStatement = connection.prepareStatement("insert into korisnik(IdTipKorisnika, Ime, Prezime, Email, Lozinka, Status) values(?, ?, ?, ?, ?, ?)", generatedColumns);
-            preparedStatement.setInt(1, user.getIdTipKorisnika());
-            preparedStatement.setString(2, user.getIme());
-            preparedStatement.setString(3, user.getPrezime());
-            preparedStatement.setString(4, user.getEmail());
-            preparedStatement.setString(5, shaPassword);
-            preparedStatement.setBoolean(6, user.isStatus());
-            preparedStatement.executeUpdate();
-            resultSet = preparedStatement.getGeneratedKeys();
-
-            if(resultSet.next()){
-                user.setId(resultSet.getInt(1));
-            }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }finally{
-            this.closeStatment(preparedStatement);
-            this.closeResultSet(resultSet);
-            this.closeConnection(connection);
-        }
-
-        return user;
-    }
-
-    @Override
     public List<Category> allCategory() {
         List<Category> allCategory = new ArrayList<>();
 
@@ -394,5 +357,42 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
             this.closeConnection(connection);
         }
         return users;
+    }
+
+    @Override
+    public User addUser(User user) {
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try{
+            connection = this.newConnection();
+
+            String[] generatedColumns = {"id"};
+
+            String shaPassword = DigestUtils.sha256Hex(user.getLozinka());
+            preparedStatement = connection.prepareStatement("insert into korisnik(IdTipKorisnika, Ime, Prezime, Email, Lozinka, Status) values(?, ?, ?, ?, ?, ?)", generatedColumns);
+            preparedStatement.setInt(1, user.getIdTipKorisnika());
+            preparedStatement.setString(2, user.getIme());
+            preparedStatement.setString(3, user.getPrezime());
+            preparedStatement.setString(4, user.getEmail());
+            preparedStatement.setString(5, shaPassword);
+            preparedStatement.setBoolean(6, user.isStatus());
+            preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
+
+            if(resultSet.next()){
+                user.setId(resultSet.getInt(1));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally{
+            this.closeStatment(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+
+        return user;
     }
 }

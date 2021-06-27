@@ -12,4 +12,6 @@ public class AdminService {
     private NewsRepositorty newsRepositorty;
 
     public List<User> allUsers(){ return this.newsRepositorty.allUsers(); }
+
+    public User addUser(User user){ return this.newsRepositorty.addUser(user); }
 }

@@ -15,5 +15,4 @@ public class UserService {
     public List<UserTipe> allUserTipes(){ return this.newsRepositorty.allUserTipes(); }
 
     public User findUser(String email, String password){ return this.newsRepositorty.findUser(email, password); }
-    public User addUser(User user){ return this.newsRepositorty.addUser(user); }
 }

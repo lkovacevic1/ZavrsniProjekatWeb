@@ -33,8 +33,4 @@ public class UserResource {
 
         return Response.ok("OK").cookie(cookie).build();
     }
-
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public User createUser(@Valid User user){ return this.userService.addUser(user); }
 }

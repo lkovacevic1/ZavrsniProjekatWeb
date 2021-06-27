@@ -11,7 +11,6 @@ public interface NewsRepositorty {
     //User
     public List<UserTipe> allUserTipes();
     public User findUser(String email, String password);
-    public User addUser(User user);
     //Category
     public List<Category> allCategory();
     public Category addCategory(Category category);
@@ -24,4 +23,5 @@ public interface NewsRepositorty {
     public List<News> searchNews(String text);
     //Admin
     public List<User> allUsers();
+    public User addUser(User user);
 }
