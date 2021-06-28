@@ -21,7 +21,7 @@ public class UserResource {
     public Response allUserTipes() { return Response.ok(this.userService.allUserTipes()).build(); }
 
     @POST
-    @Path("/findUser")
+    @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findUser(User findUser){
         User user = this.userService.findUser(findUser);
