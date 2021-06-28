@@ -7,7 +7,6 @@ import rs.raf.ZavrsniProjekat.entities.User;
 import rs.raf.ZavrsniProjekat.entities.UserTipe;
 import rs.raf.ZavrsniProjekat.repositories.MySqlAbstractRepository;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -304,7 +303,6 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
 
     @Override
     public List<News> searchNews(String text) {
-        System.out.println("Udje u searshNews!!!");
         List<News> news = new ArrayList<>();
 
         Connection connection = null;
@@ -317,9 +315,8 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
             preparedStatement.setString(1, text);
             preparedStatement.setString(2, text);
             resultSet = preparedStatement.executeQuery();
-            System.out.println("Pre while");
+
             while(resultSet.next()){
-                System.out.println("Udje u while!!!");
                 news.add(new News(resultSet.getInt("IdVesti"), resultSet.getInt("idKategorije"), resultSet.getInt("idKorisnika"), resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getDate("vremeKreiranja"), resultSet.getInt("brojPoseta")));
             }
         }catch (SQLException e){
@@ -379,6 +376,73 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
             preparedStatement.setString(4, user.getEmail());
             preparedStatement.setString(5, shaPassword);
             preparedStatement.setBoolean(6, user.isStatus());
+            preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
+
+            if(resultSet.next()){
+                user.setId(resultSet.getInt(1));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally{
+            this.closeStatment(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+
+        return user;
+    }
+
+    @Override
+    public User updateUser(User user, Integer id) {
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try{
+            connection = this.newConnection();
+
+            String[] generatedColumns = {"id"};
+
+            preparedStatement = connection.prepareStatement("update korisnik set Ime = ?, Prezime = ?, Email = ?, IdTipKorisnika = ? where IdKorisnika = ?", generatedColumns);
+            preparedStatement.setString(1, user.getIme());
+            preparedStatement.setString(2, user.getPrezime());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setInt(4, user.getIdTipKorisnika());
+            preparedStatement.setInt(5, id);
+            preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
+
+            if(resultSet.next()){
+                user.setId(resultSet.getInt(1));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally{
+            this.closeStatment(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+
+        return user;
+    }
+
+    @Override
+    public User changeUserStatus(User user, Integer id) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try{
+            connection = this.newConnection();
+
+            String[] generatedColumns = {"id"};
+
+            preparedStatement = connection.prepareStatement("update korisnik set Status = ? where IdKorisnika = ? and IdTipKorisnika = ?", generatedColumns);
+            preparedStatement.setBoolean(1, user.isStatus());
+            preparedStatement.setInt(2, id);
+            preparedStatement.setInt(3, 2);
             preparedStatement.executeUpdate();
             resultSet = preparedStatement.getGeneratedKeys();
 

@@ -24,4 +24,6 @@ public interface NewsRepositorty {
     //Admin
     public List<User> allUsers();
     public User addUser(User user);
+    public User updateUser(User user, Integer id);
+    public User changeUserStatus(User user, Integer id);
 }

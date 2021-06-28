@@ -37,4 +37,27 @@ public class AdminResource {
         else
             return Response.status(401).build();
     }
+
+    @PUT
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateUser(@Valid User user, @PathParam("id") Integer id, @CookieParam("myCookie") Cookie cookie){
+        if (cookie == null)
+            return Response.status(400).build();
+        else if (cookie.getValue().equals("admin"))
+            return Response.ok(this.adminService.updateUser(user, id)).build();
+        else
+            return Response.status(401).build();
+    }
+    @PUT
+    @Path("/status/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response changeUserStatus(@Valid User user, @PathParam("id") Integer id, @CookieParam("myCookie") Cookie cookie){
+        if (cookie == null)
+            return Response.status(400).build();
+        else if (cookie.getValue().equals("admin"))
+            return Response.ok(this.adminService.changeUserStatus(user, id)).build();
+        else
+            return Response.status(401).build();
+    }
 }
