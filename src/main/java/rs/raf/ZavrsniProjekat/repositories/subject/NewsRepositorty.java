@@ -29,4 +29,7 @@ public interface NewsRepositorty {
     public List<News> latestNews();
     public List<News> mostPopular();
     public List<News> categoryNews(Integer id);
+    public List<WholeNews> wholeNews(Integer id);
+    public List<Tag> allTags();
+    public List<TagNews> tagNews(Integer id);
 }

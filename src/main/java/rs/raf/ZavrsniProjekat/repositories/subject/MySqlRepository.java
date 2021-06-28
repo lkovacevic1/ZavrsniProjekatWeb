@@ -610,5 +610,105 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
         return  news;
     }
 
+    @Override
+    public List<WholeNews> wholeNews(Integer id){
+        List<WholeNews> news = new ArrayList<>();
 
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+            connection = this.newConnection();
+
+            String[] generatedColumns = {"id"};
+            preparedStatement = connection.prepareStatement("select vest.Naslov, vest.Tekst, vest.VremeKreiranja, korisnik.Ime, tag.Reci, komentar.Tekst, komentar.DatumKreiranja, komentar.IdKorisnika\n" +
+                    "from news.vest \n" +
+                    "join korisnik\n" +
+                    "on vest.IdKorisnika = korisnik.IdKorisnika\n" +
+                    "join komentar\n" +
+                    "on vest.IdVesti = komentar.IdVesti\n" +
+                    "join tag_vest\n" +
+                    "on vest.IdVesti = tag_vest.IdVest\n" +
+                    "join tag\n" +
+                    "on tag.IdTaga = tag_vest.IdTag\n" +
+                    "where vest.IdVesti = ?\n" +
+                    "order by vest.VremeKreiranja desc;", generatedColumns);
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                news.add(new WholeNews(resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getDate("vremeKreiranja"), resultSet.getString("ime"), resultSet.getString("reci"), resultSet.getString("tekst"), resultSet.getDate("datumKreiranja"), resultSet.getInt("idKorisnika")));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            this.closeStatment(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return  news;
+    }
+
+    @Override
+    public List<Tag> allTags(){
+        List<Tag> tags = new ArrayList<>();
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try{
+            connection = this.newConnection();
+
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM tag");
+            while(resultSet.next()){
+                tags.add(new Tag(resultSet.getInt("IdTaga"), resultSet.getString("Reci")));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            this.closeStatment(statement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+
+        return tags;
+    }
+
+    @Override
+    public List<TagNews> tagNews(Integer id){
+        List<TagNews> tagNews = new ArrayList<>();
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try{
+            connection = this.newConnection();
+
+            String[] generatedColumns = {"id"};
+            preparedStatement = connection.prepareStatement("select vest.Naslov, vest.Tekst, kategorija.Ime, vest.VremeKreiranja\n" +
+                    "from tag\n" +
+                    "join tag_vest\n" +
+                    "on tag.IdTaga = tag_vest.IdTag\n" +
+                    "join vest\n" +
+                    "on tag_vest.IdVest = vest.IdVesti\n" +
+                    "join kategorija\n" +
+                    "on vest.IdKategorije = kategorija.IdKategorije\n" +
+                    "where tag.IdTaga = ?;", generatedColumns);
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                tagNews.add(new TagNews(resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getString("ime"), resultSet.getDate("vremeKreiranja")));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally{
+            this.closeStatment(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return tagNews;
+    }
 }

@@ -31,4 +31,18 @@ public class HomePageResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response kategoryNews(@PathParam("kategorija") Integer kategorija){ return Response.ok(this.homePageService.kategoryNews(kategorija)).build(); }
 
+    @GET
+    @Path("/wholeNews/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response wholeNews(@PathParam("id") Integer id) { return Response.ok(this.homePageService.wholeNews(id)).build(); }
+
+    @GET
+    @Path("/allTags")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response allTags() { return Response.ok(this.homePageService.allTags()).build(); }
+
+    @GET
+    @Path("/tag/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response tagNews(@PathParam("id") Integer id) { return Response.ok(this.homePageService.tagNews(id)).build(); }
 }
