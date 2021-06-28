@@ -20,11 +20,11 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response allUserTipes() { return Response.ok(this.userService.allUserTipes()).build(); }
 
-    @GET
-    @Path("/{email}/{password}")
+    @POST
+    @Path("/findUser")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findUser(@PathParam("email") String email, @PathParam("password") String password){
-        User user = this.userService.findUser(email, password);
+    public Response findUser(User findUser){
+        User user = this.userService.findUser(findUser);
         NewCookie cookie;
         if(user.getIdTipKorisnika() == 1)
             cookie = new NewCookie("myCookie", "admin", "/api", "localhost", "", -1, false);

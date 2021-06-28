@@ -41,7 +41,7 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
     }
 
     @Override
-    public User findUser(String email, String password) {
+    public User findUser(User findUser) {
         User user = null;
 
         Connection connection = null;
@@ -51,9 +51,9 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
         try{
             connection = this.newConnection();
 
-            String shaPassword = DigestUtils.sha256Hex(password);
+            String shaPassword = DigestUtils.sha256Hex(findUser.getLozinka());
             preparedStatement = connection.prepareStatement("SELECT * FROM korisnik WHERE Email = ? and Lozinka = ? and Status = true");
-            preparedStatement.setString(1, email);
+            preparedStatement.setString(1, findUser.getEmail());
             preparedStatement.setString(2, shaPassword);
             resultSet = preparedStatement.executeQuery();
 
@@ -148,7 +148,7 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
     }
 
     @Override
-    public void updateCategory(Category category, Integer id) {
+    public Category updateCategory(Category category, Integer id) {
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -177,7 +177,7 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
             this.closeConnection(connection);
         }
 
-        return;
+        return category;
     }
 
     @Override
@@ -232,6 +232,81 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
             e.printStackTrace();
         }finally{
             this.closeStatment(statement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+
+        return news;
+    }
+
+    @Override
+    public News findeNews(Integer id){
+        News news = null;
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = this.newConnection();
+
+            preparedStatement = connection.prepareStatement("select * from vest where IdVesti = ?");
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                int idNews = resultSet.getInt("idVesti");
+                int idKategorije = resultSet.getInt("idKategorije");
+                int idKorisnika = resultSet.getInt("idKorisnika");
+                String naslov = resultSet.getString("naslov");
+                String tekst = resultSet.getString("tekst");
+                Date date = resultSet.getDate("vremeKreiranja");
+                int brPoseta = resultSet.getInt("brojPoseta");
+                news = new News(idNews, idKategorije, idKorisnika, naslov, tekst, date, brPoseta);
+            }
+
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally{
+            this.closeStatment(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return news;
+    }
+
+    @Override
+    public News updateNews(News news, Integer id){
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try{
+            connection = this.newConnection();
+
+            String[] generatedColumns = {"id"};
+
+            preparedStatement = connection.prepareStatement("update vest set IdKategorije = ?, IdKorisnika = ?, Naslov = ?, Tekst = ?, BrojPoseta = ? where IdVesti = ?", generatedColumns);
+            preparedStatement.setInt(1, news.getIdKategorije());
+            preparedStatement.setInt(2, news.getIdKorisnika());
+            preparedStatement.setString(3, news.getNaslov());
+            preparedStatement.setString(4, news.getTekst());
+            preparedStatement.setInt(5, news.getBrojPoseta());
+            preparedStatement.setInt(6, id);
+            preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
+
+            if(resultSet.next()){
+                news.setId(resultSet.getInt(1));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally{
+            this.closeStatment(preparedStatement);
             this.closeResultSet(resultSet);
             this.closeConnection(connection);
         }

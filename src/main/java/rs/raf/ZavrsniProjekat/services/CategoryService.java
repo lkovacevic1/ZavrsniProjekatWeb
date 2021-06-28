@@ -2,7 +2,6 @@ package rs.raf.ZavrsniProjekat.services;
 
 import rs.raf.ZavrsniProjekat.entities.Category;
 import rs.raf.ZavrsniProjekat.repositories.subject.NewsRepositorty;
-import rs.raf.ZavrsniProjekat.resources.CategoryResource;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -16,11 +15,12 @@ public class CategoryService {
 
     public Category addCategory(Category category) { return this.newsRepositorty.addCategory(category); }
 
-    public void updateCategory(Category category, Integer id) {
-        this.newsRepositorty.updateCategory(category, id);
+    public Category updateCategory(Category category, Integer id) {
+        return this.newsRepositorty.updateCategory(category, id);
     }
 
-    public void deleteCategory(Integer id){
+    public Object deleteCategory(Integer id){
         this.newsRepositorty.deleteCategory(id);
+        return null;
     }
 }

@@ -13,6 +13,10 @@ public class NewsService {
 
     public List<News> allNews() { return this.newsRepositorty.allNews(); }
 
+    public News findeNews(Integer id) { return this.newsRepositorty.findeNews(id); }
+
+    public News updateNews(News news, Integer id) { return this.newsRepositorty.updateNews(news, id); }
+
     public News addNews(News news) { return  this.newsRepositorty.addNews(news); }
 
     public News deleteNews(Integer id) { return this.newsRepositorty.deleteNews(id); }
