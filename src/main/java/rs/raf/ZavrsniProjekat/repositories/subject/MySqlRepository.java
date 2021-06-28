@@ -438,6 +438,14 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
         try{
             connection = this.newConnection();
 
+            preparedStatement = connection.prepareStatement("select * from korisnik where email = ?");
+            preparedStatement.setString(1, user.getEmail());
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                System.out.println("Postoji korisnik sa ovim mejlom!");
+                return null;
+            }
+
             String[] generatedColumns = {"id"};
 
             String shaPassword = DigestUtils.sha256Hex(user.getLozinka());
