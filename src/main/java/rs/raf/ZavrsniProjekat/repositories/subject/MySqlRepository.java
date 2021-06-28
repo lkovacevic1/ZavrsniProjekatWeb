@@ -534,4 +534,54 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
 
         return user;
     }
+
+    @Override
+    public List<News> latestNews(){
+        List<News> news = new ArrayList<>();
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try{
+            connection = this.newConnection();
+
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM news.vest order by VremeKreiranja asc limit 10");
+            while(resultSet.next()){
+                news.add(new News(resultSet.getInt("IdVesti"), resultSet.getInt("IdKategorije"), resultSet.getInt("IdKorisnika"), resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getDate("vremeKreiranja"), resultSet.getInt("brojPoseta")));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            this.closeStatment(statement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return  news;
+    }
+
+    @Override
+    public List<News> mostPopular(){
+        List<News> news = new ArrayList<>();
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try{
+            connection = this.newConnection();
+
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM vest WHERE DATE(VremeKreiranja) >= DATE(NOW()) - INTERVAL 30 DAY");
+            while(resultSet.next()){
+                news.add(new News(resultSet.getInt("IdVesti"), resultSet.getInt("IdKategorije"), resultSet.getInt("IdKorisnika"), resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getDate("vremeKreiranja"), resultSet.getInt("brojPoseta")));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            this.closeStatment(statement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return  news;
+    }
 }

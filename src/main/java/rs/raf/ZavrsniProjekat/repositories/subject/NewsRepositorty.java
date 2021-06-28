@@ -28,4 +28,7 @@ public interface NewsRepositorty {
     public User addUser(User user);
     public User updateUser(User user, Integer id);
     public User changeUserStatus(User user, Integer id);
+    //Platforma za citanje
+    public List<News> latestNews();
+    public List<News> mostPopular();
 }

@@ -9,6 +9,7 @@ import rs.raf.ZavrsniProjekat.services.AdminService;
 import rs.raf.ZavrsniProjekat.services.CategoryService;
 import rs.raf.ZavrsniProjekat.services.NewsService;
 import rs.raf.ZavrsniProjekat.services.UserService;
+import rs.raf.ZavrsniProjekat.services.platformaService.HomePageService;
 
 import javax.inject.Singleton;
 import javax.ws.rs.ApplicationPath;
@@ -30,6 +31,7 @@ public class HelloApplication extends ResourceConfig {
                 this.bindAsContract(CategoryService.class);
                 this.bindAsContract(NewsService.class);
                 this.bindAsContract(AdminService.class);
+                this.bindAsContract(HomePageService.class);
             }
         };
         register(binder);
