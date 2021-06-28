@@ -1,10 +1,7 @@
 package rs.raf.ZavrsniProjekat.repositories.subject;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import rs.raf.ZavrsniProjekat.entities.Category;
-import rs.raf.ZavrsniProjekat.entities.News;
-import rs.raf.ZavrsniProjekat.entities.User;
-import rs.raf.ZavrsniProjekat.entities.UserTipe;
+import rs.raf.ZavrsniProjekat.entities.*;
 import rs.raf.ZavrsniProjekat.repositories.MySqlAbstractRepository;
 
 import java.sql.*;
@@ -546,7 +543,7 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
             connection = this.newConnection();
 
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM news.vest order by VremeKreiranja asc limit 10");
+            resultSet = statement.executeQuery("SELECT * FROM news.vest order by VremeKreiranja DESC limit 10");
             while(resultSet.next()){
                 news.add(new News(resultSet.getInt("IdVesti"), resultSet.getInt("IdKategorije"), resultSet.getInt("IdKorisnika"), resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getDate("vremeKreiranja"), resultSet.getInt("brojPoseta")));
             }
@@ -571,7 +568,7 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
             connection = this.newConnection();
 
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM vest WHERE DATE(VremeKreiranja) >= DATE(NOW()) - INTERVAL 30 DAY");
+            resultSet = statement.executeQuery("SELECT * FROM vest WHERE DATE(VremeKreiranja) >= DATE(NOW()) - INTERVAL 30 DAY ORDER BY BrojPoseta DESC LIMIT 10");
             while(resultSet.next()){
                 news.add(new News(resultSet.getInt("IdVesti"), resultSet.getInt("IdKategorije"), resultSet.getInt("IdKorisnika"), resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getDate("vremeKreiranja"), resultSet.getInt("brojPoseta")));
             }
@@ -584,4 +581,34 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
         }
         return  news;
     }
+
+    @Override
+    public List<News> categoryNews(Integer id){
+        List<News> news = new ArrayList<>();
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+            connection = this.newConnection();
+
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM vest WHERE IdKategorije = ?");
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while(resultSet.next()){
+                news.add(new News(resultSet.getInt("IdVesti"), resultSet.getInt("IdKategorije"), resultSet.getInt("IdKorisnika"), resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getDate("vremeKreiranja"), resultSet.getInt("brojPoseta")));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            this.closeStatment(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return  news;
+    }
+
+
 }

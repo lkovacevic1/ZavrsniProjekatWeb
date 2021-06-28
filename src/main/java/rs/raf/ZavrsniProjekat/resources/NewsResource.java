@@ -72,11 +72,6 @@ public class NewsResource {
     @Path("/{text}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchNews(@PathParam("text") String text, @CookieParam("myCookie")Cookie cookie) {
-        if(cookie == null)
-            return Response.status(400).build();
-        else if(cookie.getValue().equals("admin") || cookie.getValue().equals("user"))
-            return Response.ok(this.newsService.searchNews(text)).build();
-        else
-            return Response.status(401).build();
+        return Response.ok(this.newsService.searchNews(text)).build();
     }
 }

@@ -1,9 +1,6 @@
 package rs.raf.ZavrsniProjekat.repositories.subject;
 
-import rs.raf.ZavrsniProjekat.entities.Category;
-import rs.raf.ZavrsniProjekat.entities.News;
-import rs.raf.ZavrsniProjekat.entities.User;
-import rs.raf.ZavrsniProjekat.entities.UserTipe;
+import rs.raf.ZavrsniProjekat.entities.*;
 
 import java.util.List;
 
@@ -31,4 +28,5 @@ public interface NewsRepositorty {
     //Platforma za citanje
     public List<News> latestNews();
     public List<News> mostPopular();
+    public List<News> categoryNews(Integer id);
 }

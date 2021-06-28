@@ -4,9 +4,7 @@ import rs.raf.ZavrsniProjekat.entities.News;
 import rs.raf.ZavrsniProjekat.services.platformaService.HomePageService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -27,4 +25,10 @@ public class HomePageResource {
     @Path("/mostPopular")
     @Produces(MediaType.APPLICATION_JSON)
     public Response mostPopular(){ return Response.ok(this.homePageService.mostPopular()).build(); }
+
+    @GET
+    @Path("/{kategorija}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response kategoryNews(@PathParam("kategorija") Integer kategorija){ return Response.ok(this.homePageService.kategoryNews(kategorija)).build(); }
+
 }
