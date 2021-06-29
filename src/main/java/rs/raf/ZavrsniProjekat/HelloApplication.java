@@ -37,6 +37,6 @@ public class HelloApplication extends ResourceConfig {
         register(binder);
 
         // Ucitavamo resurse
-        packages("rs.raf.ZavrsniProjekat.resources");
+        packages("rs.raf.ZavrsniProjekat");
     }
 }

@@ -17,6 +17,13 @@ public class NewsResource {
     private NewsService newsService;
 
     @GET
+    @Path("/allNews")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response allNews(){
+        return Response.ok(this.newsService.allNews()).build();
+    }
+
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response allNews(@CookieParam("myCookie") Cookie cookie) {
         if(cookie == null)
@@ -69,9 +76,21 @@ public class NewsResource {
     }
 
     @GET
-    @Path("/{text}")
+    @Path("/autorisation/{text}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchNews(@PathParam("text") String text, @CookieParam("myCookie")Cookie cookie) {
+        if(cookie == null)
+            return Response.status(400).build();
+        else if(cookie.getValue().equals("admin") || cookie.getValue().equals("user"))
+            return Response.ok(this.newsService.searchNews(text)).build();
+        else
+            return Response.status(401).build();
+    }
+
+    @GET
+    @Path("/{text}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchNews(@PathParam("text") String text) {
         return Response.ok(this.newsService.searchNews(text)).build();
     }
 }
