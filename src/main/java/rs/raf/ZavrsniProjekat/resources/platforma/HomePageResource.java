@@ -45,4 +45,9 @@ public class HomePageResource {
     @Path("/tag/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response tagNews(@PathParam("id") Integer id) { return Response.ok(this.homePageService.tagNews(id)).build(); }
+
+    @GET
+    @Path("/allCategories")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response allCategories(){ return Response.ok(this.homePageService.allCategories()).build(); }
 }

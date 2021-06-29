@@ -1,5 +1,6 @@
 package rs.raf.ZavrsniProjekat.services;
 
+import rs.raf.ZavrsniProjekat.entities.Comments;
 import rs.raf.ZavrsniProjekat.entities.News;
 import rs.raf.ZavrsniProjekat.repositories.subject.NewsRepositorty;
 
@@ -22,4 +23,6 @@ public class NewsService {
     public News deleteNews(Integer id) { return this.newsRepositorty.deleteNews(id); }
 
     public List<News> searchNews(String text) { return  this.newsRepositorty.searchNews(text); }
+
+    public Comments addComment(Comments comments, Integer id, Integer idKorisnika) { return this.newsRepositorty.addComment(comments, id, idKorisnika); }
 }

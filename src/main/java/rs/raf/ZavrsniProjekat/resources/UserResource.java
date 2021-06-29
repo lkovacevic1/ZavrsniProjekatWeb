@@ -31,6 +31,6 @@ public class UserResource {
         else
             cookie = new NewCookie("myCookie", "user", "/api", "localhost", "", -1, false);
 
-        return Response.ok("OK").cookie(cookie).build();
+        return Response.ok(cookie).build();
     }
 }

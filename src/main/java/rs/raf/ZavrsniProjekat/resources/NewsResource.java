@@ -1,5 +1,6 @@
 package rs.raf.ZavrsniProjekat.resources;
 
+import rs.raf.ZavrsniProjekat.entities.Comments;
 import rs.raf.ZavrsniProjekat.entities.News;
 import rs.raf.ZavrsniProjekat.services.NewsService;
 
@@ -92,5 +93,12 @@ public class NewsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchNews(@PathParam("text") String text) {
         return Response.ok(this.newsService.searchNews(text)).build();
+    }
+
+    @POST
+    @Path("/comment/{id}/{idKorisnika}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addComment(Comments comments, @PathParam("id") Integer id, @PathParam("idKorisnika") Integer idKorisnika){
+        return Response.ok(this.newsService.addComment(comments, id, idKorisnika)).build();
     }
 }

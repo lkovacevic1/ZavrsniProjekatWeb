@@ -645,7 +645,7 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
             resultSet = preparedStatement.executeQuery();
 
             while(resultSet.next()){
-                news.add(new WholeNews(resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getDate("vremeKreiranja"), resultSet.getString("ime"), resultSet.getString("reci"), resultSet.getString("tekst"), resultSet.getDate("datumKreiranja"), resultSet.getInt("idKorisnika")));
+                news.add(new WholeNews(resultSet.getString("naslov"), resultSet.getString("tekst"), resultSet.getDate("vremeKreiranja"), resultSet.getString("ime"), resultSet.getString("reci"), resultSet.getString(6), resultSet.getDate("datumKreiranja"), resultSet.getInt("idKorisnika")));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -718,5 +718,42 @@ public class MySqlRepository extends MySqlAbstractRepository implements NewsRepo
             this.closeConnection(connection);
         }
         return tagNews;
+    }
+
+    @Override
+    public Comments addComment(Comments comments, Integer idVesti, Integer idKorisnika){
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try{
+            connection = this.newConnection();
+
+            String[] generatedColumns = {"id"};
+
+            preparedStatement = connection.prepareStatement("insert into komentar (IdKorisnika, IdVesti, Tekst, DatumKreiranja) values (?, ?, ?, CURRENT_TIMESTAMP )", generatedColumns);
+            preparedStatement.setInt(1, idKorisnika);
+            preparedStatement.setInt(2, idVesti);
+            preparedStatement.setString(3, comments.getTekst());
+            preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
+
+            if(resultSet.next()){
+                comments.setId(resultSet.getInt(1));
+                comments.setIdKorisnika(resultSet.getInt(idKorisnika));
+                comments.setIdVesti(resultSet.getInt(idVesti));
+                comments.setTekst(resultSet.getString("Tekst"));
+                comments.setDatumKreiranja(resultSet.getDate("DatumKreiranja"));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally{
+            this.closeStatment(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+
+        return comments;
     }
 }

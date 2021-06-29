@@ -20,6 +20,7 @@ public interface NewsRepositorty {
     public News updateNews(News news, Integer id);
     public News deleteNews(Integer id);
     public List<News> searchNews(String text);
+    public Comments addComment(Comments comments, Integer id, Integer idKorisnika);
     //Admin
     public List<User> allUsers();
     public User addUser(User user);
